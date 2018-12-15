@@ -1,0 +1,126 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion versions.compileSdk
+    buildToolsVersion versions.buildTools
+    defaultConfig {
+        applicationId "com.example.github"
+        minSdkVersion versions.minSdk
+        targetSdkVersion versions.compileSdk
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            postprocessing {
+                proguardFile 'proguard-rules.pro'
+            }
+            buildConfigField 'String', 'BASE_URL', '"https://api.github.com//"'
+        }
+
+        debug {
+            buildConfigField 'String', 'BASE_URL', '"https://api.github.com//"'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility versions.sourceCompat
+        targetCompatibility versions.targetCompat
+    }
+
+    dataBinding {
+        enabled = true
+    }
+
+    //For testing
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+        }
+    }
+}
+
+androidExtensions {
+    experimental = true
+}
+
+configurations {
+    ktlint
+}
+
+dependencies {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+
+    implementation deps.support.appCompat
+    implementation deps.support.support
+    implementation deps.support.designSupport
+    implementation deps.support.constraintLayout
+
+    implementation deps.android.lifecycleExt
+    implementation deps.android.lifecycleCommon
+
+    implementation deps.kotlin.stdlib
+
+    implementation deps.reactivex.rxJava
+    implementation deps.reactivex.rxAndroid
+
+    implementation deps.google.dagger
+    implementation deps.google.daggerSupport
+    kapt deps.google.daggerProcessor
+    kapt deps.google.daggerCompiler
+    implementation deps.google.gson
+
+    implementation deps.bumptech.glide
+    kapt deps.bumptech.glideCompiler
+
+    implementation deps.square.retrofit
+    implementation deps.square.okhttp
+    implementation deps.square.gsonConverter
+    implementation deps.square.retrofitRxAdapter
+}
+
+//tests related dependencies
+dependencies {
+    implementation deps.test.idlingResource
+
+    testImplementation deps.test.junit
+    testImplementation deps.test.livedataTesting
+    testImplementation deps.test.mockitoInline
+    testImplementation deps.test.mockWebServer
+
+    androidTestImplementation deps.test.junit
+    androidTestImplementation deps.test.mockitoKotlin
+    androidTestImplementation deps.test.livedataTesting
+    androidTestImplementation deps.test.espressoCore
+    androidTestImplementation deps.test.espressoContrib
+    androidTestImplementation deps.test.espressoIntents
+    androidTestImplementation deps.test.idlingConcurrent
+    androidTestImplementation deps.test.testRunner
+    androidTestImplementation deps.test.testRules
+}
+
+dependencies {
+    ktlint "com.github.shyiko:ktlint:0.29.0"
+}
+
+task ktlint(type: JavaExec, group: "verification") {
+    description = "Check Kotlin code style."
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt"
+}
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec, group: "formatting") {
+    description = "Fix Kotlin code style deviations."
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
+}
+
