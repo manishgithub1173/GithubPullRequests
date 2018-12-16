@@ -4,7 +4,11 @@ import android.arch.lifecycle.MutableLiveData
 import android.arch.lifecycle.ViewModel
 import com.example.github.data.PullRequest
 import com.example.github.repository.AppRepository
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.observers.DisposableObserver
+import io.reactivex.schedulers.Schedulers
+import retrofit2.Response
 import javax.inject.Inject
 
 class PullRequestFragmentViewModel @Inject constructor (private var appRepository: AppRepository) : ViewModel() {
@@ -27,6 +31,26 @@ class PullRequestFragmentViewModel @Inject constructor (private var appRepositor
     }
 
     fun fetchPullRequest(repo: String, project: String, state: String) {
+        compositeDisposable.add(appRepository.getPullRequests(repo, project, state)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe { onAPIStart() }
+            .doOnTerminate { onAPIFinish() }
+            .subscribeWith(object : DisposableObserver<Response<List<PullRequest>>>() {
+                override fun onNext(result: Response<List<PullRequest>>) {
+                    result.body()?.let {
+                        onSuccess(it)
+                    }
+                }
+
+                override fun onComplete() {
+                }
+
+                override fun onError(e: Throwable) {
+                    onAPIError(e)
+                }
+            })
+        )
     }
 
     private fun onAPIStart() {
