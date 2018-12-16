@@ -28,12 +28,10 @@ class PullRequestListAdapter(data: ArrayList<PullRequest>)
         val pullRequestViewHolder = holder as PullRequestViewHolder
         pullRequestViewHolder.number.text = pullRequest.number
         pullRequestViewHolder.title.text = pullRequest.title
-        pullRequestViewHolder.description.text = pullRequest.description
     }
 
     inner class PullRequestViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         val number = itemView.number as AppCompatTextView
         val title = itemView.title as AppCompatTextView
-        val description: AppCompatTextView = itemView.description as AppCompatTextView
     }
 }

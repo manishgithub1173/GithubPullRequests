@@ -6,6 +6,5 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PullRequest(
     val number: String,
-    val title: String,
-    val description: String
+    val title: String
 ) : Parcelable

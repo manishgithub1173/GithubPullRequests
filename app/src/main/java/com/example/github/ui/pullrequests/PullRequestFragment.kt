@@ -112,6 +112,14 @@ class PullRequestFragment : DaggerFragment() {
         }
     }
 
-    private fun showPullRequests(users: List<PullRequest>) {
+    private fun showPullRequests(pullRequests: List<PullRequest>) {
+        val fragmentManager = childFragmentManager
+        val fragmentTransaction = fragmentManager.beginTransaction()
+        fragmentTransaction.add(
+            R.id.trendingRepoContainer,
+            PullRequestListFragment.newInstance(pullRequests as ArrayList<PullRequest>),
+            PullRequestFragment.TAG
+        )
+        fragmentTransaction.commit()
     }
 }

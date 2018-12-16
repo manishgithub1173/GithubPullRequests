@@ -7,9 +7,9 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface RetrofitService {
-    @GET("repo/{repo}/{project}")
+    @GET("repos/{repo}/{project}/pulls")
     fun getPullRequests(
-        @Path("repos") repo: String,
+        @Path("repo") repo: String,
         @Path("project") project: String,
         @Query("state") state: String
     ): Observable<Response<List<PullRequest>>>

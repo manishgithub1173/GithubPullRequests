@@ -1,6 +1,5 @@
 package com.example.github.ui.pullrequests
 
-import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v4.app.Fragment
 import android.support.v7.widget.DividerItemDecoration
@@ -15,7 +14,6 @@ import kotlinx.android.synthetic.main.fragment_pull_request_list.*
 class PullRequestListFragment : Fragment() {
     private lateinit var pullRequestListAdapter: PullRequestListAdapter
     private lateinit var pullRequests: ArrayList<PullRequest>
-    private lateinit var pullRequestFragmentViewModel: PullRequestFragmentViewModel
 
     companion object {
         var TAG = PullRequestListFragment::class.java.canonicalName!!
@@ -34,7 +32,6 @@ class PullRequestListFragment : Fragment() {
         super.onCreate(savedInstanceState)
 
         pullRequests = arguments?.getParcelableArrayList(ARG_PULL_REQUEST)!!
-        setupViewModel()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -46,11 +43,6 @@ class PullRequestListFragment : Fragment() {
 
         setupLayoutManager()
         setupAdapter()
-    }
-
-    private fun setupViewModel() {
-        pullRequestFragmentViewModel = ViewModelProviders.of(activity!!)
-            .get(PullRequestFragmentViewModel::class.java)
     }
 
     private fun setupAdapter() {
